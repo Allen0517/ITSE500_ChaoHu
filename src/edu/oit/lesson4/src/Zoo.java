@@ -23,6 +23,9 @@ public class Zoo {
     }
 
     public static void main(String[] args) {
+        Animal animal = new Animal("Lion", "land");
+        animal.setType("sea");
+        animal.intro();
         Lion xin = new Lion();
 
         xin.intro();//I am nulland I belong to null
@@ -38,16 +41,25 @@ class Animal extends Zoo{
         this.myname = myname;
         this.type = type;
     }
+    public void setType(String type){
+        this.type = type;
+    }
+
+
     public Animal(){
 
     }
 
-    public void intro(){
-        System.out.println("I am " + name + "and I belong to " + type);
+    public void setFood(String food){
+        this.food = food;
     }
-    public String action(String actionName, String thing){
+
+    public void intro(){
+        System.out.println("I am " + this.myname + "and I belong to " + this.type);
+    }
+    public String eating(String food){
         String result;
-        result = "I am " + actionName +" " + thing;
+        result = "I am eating" +" " + this.food;
         return result;
     }
 }
