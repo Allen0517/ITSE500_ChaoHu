@@ -28,6 +28,7 @@ public class Vehicle {
 
     public static void main(String[] args) {
         Vehicle v1 = new Vehicle("Car", 50,1000);
+        Vehicle v2 = new Vehicle("Bike", 24,1000);
         v1.move();
         v1.speedUp(20);
         v1.move();
