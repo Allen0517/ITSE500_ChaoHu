@@ -21,8 +21,12 @@ public class SellerHunter {
     BufferedReader br = null;
     try {
         File file1 = new File("input");
-        File linkFile = new File(file1, "products.txt");
-        fr = new FileReader(linkFile);
+        File input = new File(file1, "products.txt");
+
+        File file2 = new File("output");
+        File output = new File(file2, "results.txt");
+
+        fr = new FileReader(input);
         br = new BufferedReader(fr);
         String currentBook;
         while ((currentBook = br.readLine()) != null) {
@@ -34,21 +38,39 @@ public class SellerHunter {
 
             Book book = new Book(currentBook);
             List<Book.BookProduct> bookList = new ArrayList<Book.BookProduct>();
-            book.addBookItemToList(bookList, book, chromedriver);
-            String lastPageNum = chromedriver.findElement(By.cssSelector(".a-pagination li:nth-last-child(2)")).getText();
-            int pageNum = Integer.parseInt(lastPageNum);
-            for(int j = 2; j <= pageNum; j++){
-                String eachUrl = ROOTURL+currentBook+"/ref=olp_page_"+j+"?ie=UTF8&startIndex="+10*(j-1);
-                chromedriver.get(eachUrl);
-                book.addBookItemToList(bookList, book, chromedriver);
+//            setup rules;
+            boolean filter = true;
+            String shipFeeFilter = "original";
+            String conditionFilter = "All";
+            int positiveFilter = 95;
+            int ratingFilter = 100;
+
+            book.addBookItemToList(bookList, book, chromedriver,filter,shipFeeFilter,conditionFilter,positiveFilter,ratingFilter);
+
+            try{
+                String lastPageNum = chromedriver.findElement(By.cssSelector(".a-pagination li:nth-last-child(2)")).getText();
+                int pageNum = Integer.parseInt(lastPageNum);
+                for(int j = 2; j <= pageNum; j++){
+                    String eachUrl = ROOTURL+currentBook+"/ref=olp_page_"+j+"?ie=UTF8&startIndex="+10*(j-1);
+                    chromedriver.get(eachUrl);
+                    book.addBookItemToList(bookList, book, chromedriver,filter,shipFeeFilter,conditionFilter,positiveFilter,ratingFilter);
+                }
+            }catch (NoSuchElementException e){
+                e.printStackTrace();
             }
 
             Collections.sort(bookList, book.new BookComparator());
-            for (Book.BookProduct bookOne : bookList) {
-                System.out.println(bookOne.toString());
+
+            try(BufferedWriter bw = new BufferedWriter(new FileWriter(output, true))) {
+                bw.write("Book: "+currentBook+" sorted results:"+"\n");
+                for (Book.BookProduct bookOne : bookList) {
+                    bw.write(bookOne.toString()+"\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
             chromedriver.quit();
-            break;
         }
     }catch (FileNotFoundException e){
         e.printStackTrace();
@@ -56,32 +78,4 @@ public class SellerHunter {
         e.printStackTrace();
     }
 }
-
-//       while(true){
-//        List<WebElement> offerRows = chromedriver.findElements(By.className("olpOffer"));
-//
-//        for(int i = 0; i < offerRows.size(); i++){
-//            String priceStr =  offerRows.get(i).findElement(By.className("olpOfferPrice")).getText();
-//            String shipFeeStr = "0.0";
-//            try {
-//                shipFeeStr = offerRows.get(i).findElement(By.className("olpShippingPrice")).getText();
-//            }catch (NoSuchElementException  e){
-//                shipFeeStr = "0.0";
-//            }
-//            String conditionStr =  offerRows.get(i).findElement(By.className("olpCondition")).getText();
-//            String ratingStr =  offerRows.get(i).findElement(By.cssSelector(".olpSellerColumn .a-spacing-small a b")).getText();
-//
-//            Double price = Double.parseDouble(priceStr.substring(1));
-//            Double shipFee = Double.parseDouble(shipFeeStr.substring(1));
-//            String condition =  conditionStr;
-//            int rating = Integer.parseInt(ratingStr.split("%")[0]);
-//            Book.BookProduct bookItem = book.new BookProduct(price,shipFee,condition,rating);
-//            bookList.add(bookItem);
-//        }
-//
-//
-//        break;
-//    }
-
-
 }
