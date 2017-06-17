@@ -7,7 +7,6 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.xml.sax.ErrorHandler;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,11 +38,16 @@ public class SellerHunter {
             Book book = new Book(currentBook);
             List<Book.BookProduct> bookList = new ArrayList<Book.BookProduct>();
 //            setup rules;
+             String shipFeeFilter = "original";
+             String conditionFilter = "All";
+             int positiveFilter = 95;
+             int ratingFilter = 100;
+//            InputRules inputrules = new InputRules();
             boolean filter = true;
-            String shipFeeFilter = "original";
-            String conditionFilter = "All";
-            int positiveFilter = 95;
-            int ratingFilter = 100;
+//            String shipFeeFilter = inputrules.shipFeeFilter;
+//            String conditionFilter = inputrules.conditionFilter;
+//            int positiveFilter = inputrules.positiveFilter;
+//            int ratingFilter = inputrules.ratingFilter;
 
             book.addBookItemToList(bookList, book, chromedriver,filter,shipFeeFilter,conditionFilter,positiveFilter,ratingFilter);
 
